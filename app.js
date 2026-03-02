@@ -1,10 +1,10 @@
 // change this to reference the dataset you chose to work with.
-import { bikeShare as chartData } from "./data/bikeShare.js";
+import { gameSales as chartData } from "./data/gameSales.js";
 
 // --- DOM helpers ---
-const monthSelect = document.getElementById("monthSelect");
-const hoodSelect = document.getElementById("hoodSelect");
-const metricSelect = document.getElementById("metricSelect");
+const yearSelect = document.getElementById("yearSelect");
+const gameTitle = document.getElementById("gameTitle");
+const publisherSelect = document.getElementById("publisherSelect");
 const chartTypeSelect = document.getElementById("chartType");
 const renderBtn = document.getElementById("renderBtn");
 const dataPreview = document.getElementById("dataPreview");
@@ -13,14 +13,14 @@ const canvas = document.getElementById("chartCanvas");
 let currentChart = null;
 
 // --- Populate dropdowns from data ---
-const months = [...new Set(chartData.map(r => r.month))];
-const hoods = [...new Set(chartData.map(r => r.hood))];
+const years = [...new Set(chartData.map(r => r.year))];
+const titles = [...new Set(chartData.map(r => r.title))];
 
-months.forEach(m => monthSelect.add(new Option(m, m)));
-hoods.forEach(h => hoodSelect.add(new Option(h, h)));
+years.forEach(m => yearSelect.add(new Option(m, m)));
+titles.forEach(h => gameTitle.add(new Option(h, h)));
 
-monthSelect.value = months[0];
-hoodSelect.value = hoods[0];
+yearSelect.value = years[0];
+gameTitle.value = titles[0];
 
 // Preview first 6 rows
 dataPreview.textContent = JSON.stringify(chartData.slice(0, 6), null, 2);
@@ -28,23 +28,23 @@ dataPreview.textContent = JSON.stringify(chartData.slice(0, 6), null, 2);
 // --- Main render ---
 renderBtn.addEventListener("click", () => {
   const chartType = chartTypeSelect.value;
-  const month = monthSelect.value;
-  const hood = hoodSelect.value;
-  const metric = metricSelect.value;
+  const year = yearSelect.value;
+  const title = gameTitle.value;
+  const publisher = publisherSelect.value;
 
   // Destroy old chart if it exists (common Chart.js gotcha)
   if (currentChart) currentChart.destroy();
 
   // Build chart config based on type
-  const config = buildConfig(chartType, { month, hood, metric });
+  const config = buildConfig(chartType, { year, title, publisher });
 
   currentChart = new Chart(canvas, config);
 });
 
 // --- Students: you’ll edit / extend these functions ---
-function buildConfig(type, { month, hood, metric }) {
+function buildConfig(type, { year, title, publisher }) {
   if (type === "bar") return barByNeighborhood(month, metric);
-  if (type === "line") return lineOverTime(hood, ["trips", "revenueUSD"]);
+  if (type === "line") return lineOverTime(title, ["title", "revenueUSD"]);
   if (type === "scatter") return scatterTripsVsTemp(hood);
   if (type === "doughnut") return doughnutMemberVsCasual(month, hood);
   if (type === "radar") return radarCompareNeighborhoods(month);
@@ -83,8 +83,8 @@ function barByNeighborhood(month, metric) {
 // Task B: LINE — trend over time for one neighborhood (2 datasets)
 function lineOverTime(hood, metrics) {
   const rows = chartData.filter(r => r.hood === hood);
-
-  const labels = rows.map(r => r.month);
+console.log(hood,metrics)
+  const labels = rows.map(r => r.year);
 
   const datasets = metrics.map(m => ({
     label: m,
