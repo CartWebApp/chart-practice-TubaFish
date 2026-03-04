@@ -101,33 +101,33 @@ console.log(title ,metric)
       },
       scales: {
         y: { title: { display: true, text: "Value" } },
-        x: { title: { display: true, text: "Month" } }
+        x: { title: { display: true, text: "Year" } }
       }
     }
   };
 }
 
 // SCATTER — relationship between temperature and trips
-function scatterTripsVsTemp(hood) {
-  const rows = chartData.filter(r => r.hood === hood);
+function scatterTripsVsTemp(title) {
+  const rows = chartData.filter(r => r.title === title);
 
-  const points = rows.map(r => ({ x: r.tempC, y: r.trips }));
+  const points = rows.map(r => ({ x: r.unitsM, y: r.revenueUSD }));
 
   return {
     type: "scatter",
     data: {
       datasets: [{
-        label: `Trips vs Temp (${hood})`,
+        label: `Review vs Revenue (${title})`,
         data: points
       }]
     },
     options: {
       plugins: {
-        title: { display: true, text: `Does temperature affect trips? (${hood})` }
+        title: { display: true, text: `Does temperature affect trips? (${title})` }
       },
       scales: {
-        x: { title: { display: true, text: "Temperature (C)" } },
-        y: { title: { display: true, text: "Trips" } }
+        x: { title: { display: true, text: "Review Score" } },
+        y: { title: { display: true, text: "Revenue" } }
       }
     }
   };
